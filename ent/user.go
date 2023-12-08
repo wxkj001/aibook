@@ -6,6 +6,7 @@ import (
 	"aibook/ent/user"
 	"fmt"
 	"strings"
+	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -13,9 +14,31 @@ import (
 
 // User is the model entity for the User schema.
 type User struct {
-	config
+	config `json:"-"`
 	// ID of the ent.
-	ID           int `json:"id,omitempty"`
+	ID int `json:"id,omitempty"`
+	// Email holds the value of the "email" field.
+	Email string `json:"email,omitempty"`
+	// Phone holds the value of the "phone" field.
+	Phone string `json:"phone,omitempty"`
+	// Nickname holds the value of the "nickname" field.
+	Nickname string `json:"nickname,omitempty"`
+	// Avatar holds the value of the "avatar" field.
+	Avatar string `json:"avatar,omitempty"`
+	// Password holds the value of the "password" field.
+	Password string `json:"-"`
+	// Role holds the value of the "role" field.
+	Role string `json:"role,omitempty"`
+	// Ban holds the value of the "ban" field.
+	Ban bool `json:"ban,omitempty"`
+	// InviteUID holds the value of the "invite_uid" field.
+	InviteUID int `json:"invite_uid,omitempty"`
+	// LoginTime holds the value of the "login_time" field.
+	LoginTime time.Time `json:"login_time,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt time.Time `json:"created_at,omitempty"`
+	// UpdatedAt holds the value of the "updated_at" field.
+	UpdatedAt    time.Time `json:"updated_at,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -24,8 +47,14 @@ func (*User) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case user.FieldID:
+		case user.FieldBan:
+			values[i] = new(sql.NullBool)
+		case user.FieldID, user.FieldInviteUID:
 			values[i] = new(sql.NullInt64)
+		case user.FieldEmail, user.FieldPhone, user.FieldNickname, user.FieldAvatar, user.FieldPassword, user.FieldRole:
+			values[i] = new(sql.NullString)
+		case user.FieldLoginTime, user.FieldCreatedAt, user.FieldUpdatedAt:
+			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -47,6 +76,72 @@ func (u *User) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			u.ID = int(value.Int64)
+		case user.FieldEmail:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field email", values[i])
+			} else if value.Valid {
+				u.Email = value.String
+			}
+		case user.FieldPhone:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field phone", values[i])
+			} else if value.Valid {
+				u.Phone = value.String
+			}
+		case user.FieldNickname:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field nickname", values[i])
+			} else if value.Valid {
+				u.Nickname = value.String
+			}
+		case user.FieldAvatar:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field avatar", values[i])
+			} else if value.Valid {
+				u.Avatar = value.String
+			}
+		case user.FieldPassword:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field password", values[i])
+			} else if value.Valid {
+				u.Password = value.String
+			}
+		case user.FieldRole:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field role", values[i])
+			} else if value.Valid {
+				u.Role = value.String
+			}
+		case user.FieldBan:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field ban", values[i])
+			} else if value.Valid {
+				u.Ban = value.Bool
+			}
+		case user.FieldInviteUID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field invite_uid", values[i])
+			} else if value.Valid {
+				u.InviteUID = int(value.Int64)
+			}
+		case user.FieldLoginTime:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field login_time", values[i])
+			} else if value.Valid {
+				u.LoginTime = value.Time
+			}
+		case user.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				u.CreatedAt = value.Time
+			}
+		case user.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				u.UpdatedAt = value.Time
+			}
 		default:
 			u.selectValues.Set(columns[i], values[i])
 		}
@@ -82,7 +177,38 @@ func (u *User) Unwrap() *User {
 func (u *User) String() string {
 	var builder strings.Builder
 	builder.WriteString("User(")
-	builder.WriteString(fmt.Sprintf("id=%v", u.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", u.ID))
+	builder.WriteString("email=")
+	builder.WriteString(u.Email)
+	builder.WriteString(", ")
+	builder.WriteString("phone=")
+	builder.WriteString(u.Phone)
+	builder.WriteString(", ")
+	builder.WriteString("nickname=")
+	builder.WriteString(u.Nickname)
+	builder.WriteString(", ")
+	builder.WriteString("avatar=")
+	builder.WriteString(u.Avatar)
+	builder.WriteString(", ")
+	builder.WriteString("password=<sensitive>")
+	builder.WriteString(", ")
+	builder.WriteString("role=")
+	builder.WriteString(u.Role)
+	builder.WriteString(", ")
+	builder.WriteString("ban=")
+	builder.WriteString(fmt.Sprintf("%v", u.Ban))
+	builder.WriteString(", ")
+	builder.WriteString("invite_uid=")
+	builder.WriteString(fmt.Sprintf("%v", u.InviteUID))
+	builder.WriteString(", ")
+	builder.WriteString("login_time=")
+	builder.WriteString(u.LoginTime.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("created_at=")
+	builder.WriteString(u.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(u.UpdatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

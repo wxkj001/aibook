@@ -3,6 +3,8 @@
 package user
 
 import (
+	"time"
+
 	"entgo.io/ent/dialect/sql"
 )
 
@@ -11,6 +13,28 @@ const (
 	Label = "user"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldEmail holds the string denoting the email field in the database.
+	FieldEmail = "email"
+	// FieldPhone holds the string denoting the phone field in the database.
+	FieldPhone = "phone"
+	// FieldNickname holds the string denoting the nickname field in the database.
+	FieldNickname = "nickname"
+	// FieldAvatar holds the string denoting the avatar field in the database.
+	FieldAvatar = "avatar"
+	// FieldPassword holds the string denoting the password field in the database.
+	FieldPassword = "password"
+	// FieldRole holds the string denoting the role field in the database.
+	FieldRole = "role"
+	// FieldBan holds the string denoting the ban field in the database.
+	FieldBan = "ban"
+	// FieldInviteUID holds the string denoting the invite_uid field in the database.
+	FieldInviteUID = "invite_uid"
+	// FieldLoginTime holds the string denoting the login_time field in the database.
+	FieldLoginTime = "login_time"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
+	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
+	FieldUpdatedAt = "updated_at"
 	// Table holds the table name of the user in the database.
 	Table = "users"
 )
@@ -18,6 +42,17 @@ const (
 // Columns holds all SQL columns for user fields.
 var Columns = []string{
 	FieldID,
+	FieldEmail,
+	FieldPhone,
+	FieldNickname,
+	FieldAvatar,
+	FieldPassword,
+	FieldRole,
+	FieldBan,
+	FieldInviteUID,
+	FieldLoginTime,
+	FieldCreatedAt,
+	FieldUpdatedAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -30,10 +65,82 @@ func ValidColumn(column string) bool {
 	return false
 }
 
+var (
+	// DefaultRole holds the default value on creation for the "role" field.
+	DefaultRole string
+	// DefaultBan holds the default value on creation for the "ban" field.
+	DefaultBan bool
+	// DefaultLoginTime holds the default value on creation for the "login_time" field.
+	DefaultLoginTime func() time.Time
+	// UpdateDefaultLoginTime holds the default value on update for the "login_time" field.
+	UpdateDefaultLoginTime func() time.Time
+	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
+	DefaultCreatedAt func() time.Time
+	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
+	DefaultUpdatedAt func() time.Time
+	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
+	UpdateDefaultUpdatedAt func() time.Time
+)
+
 // OrderOption defines the ordering options for the User queries.
 type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByEmail orders the results by the email field.
+func ByEmail(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldEmail, opts...).ToFunc()
+}
+
+// ByPhone orders the results by the phone field.
+func ByPhone(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPhone, opts...).ToFunc()
+}
+
+// ByNickname orders the results by the nickname field.
+func ByNickname(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldNickname, opts...).ToFunc()
+}
+
+// ByAvatar orders the results by the avatar field.
+func ByAvatar(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAvatar, opts...).ToFunc()
+}
+
+// ByPassword orders the results by the password field.
+func ByPassword(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPassword, opts...).ToFunc()
+}
+
+// ByRole orders the results by the role field.
+func ByRole(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRole, opts...).ToFunc()
+}
+
+// ByBan orders the results by the ban field.
+func ByBan(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBan, opts...).ToFunc()
+}
+
+// ByInviteUID orders the results by the invite_uid field.
+func ByInviteUID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldInviteUID, opts...).ToFunc()
+}
+
+// ByLoginTime orders the results by the login_time field.
+func ByLoginTime(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLoginTime, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
+}
+
+// ByUpdatedAt orders the results by the updated_at field.
+func ByUpdatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUpdatedAt, opts...).ToFunc()
 }
