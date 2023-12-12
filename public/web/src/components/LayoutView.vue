@@ -7,7 +7,8 @@ import { useThemeStore } from '@/stores/theme';
 const renderIcon = (icon: Component) => {
     return () => h(NIcon, null, { default: () => h(icon) })
 }
-const menuOptions: MenuOption[] = [
+// const menuOptions: MenuOption[] = 
+const menuOptions =ref<MenuOption[]>([
     {
         label: () => h(
             RouterLink,
@@ -34,8 +35,27 @@ const menuOptions: MenuOption[] = [
         key: 'color',
         icon: renderIcon(ColorPaletteIcon)
     }
-]
-const menuUserOptions: MenuOption[] = [
+])
+menuOptions.value.push(
+    {
+        label: () => h(
+            RouterLink,
+            {
+                to: {
+                    name: "homeif",
+                    params: {
+                        href:"https://github.com",
+                    }
+                },
+                
+            },
+            { default: () => '自定义' }
+        ),
+        key: 'zidingyi',
+        icon: renderIcon(ColorPaletteIcon)
+    }
+)
+const menuUserOptions = ref<MenuOption[]>([
     {
         label: () => h(
             RouterLink,
@@ -63,14 +83,24 @@ const menuUserOptions: MenuOption[] = [
         icon: renderIcon(CogIcon),
 
     },
-]
+])
 const collapsed = ref(false)
-const active = ref(false)
+const bottomValue = ref()
+const mValue = ref()
 const theme=useThemeStore()
 const handleUpdateValue=(value: boolean)=>{
     theme.$patch({
         isDark: value
     })
+}
+const MeUpdateValue=(value: number)=>{
+    bottomValue.value=0
+    mValue.value=value
+}
+
+const MeUpdateValueBottom=(value: number)=>{
+    bottomValue.value=value
+    mValue.value=0
 }
 </script>
 <template>
@@ -98,8 +128,8 @@ const handleUpdateValue=(value: boolean)=>{
         <n-layout has-sider>
             <n-layout-sider bordered collapse-mode="width" :collapsed-width="64" :width="140" :collapsed="collapsed"
                 show-trigger @collapse="collapsed = true" @expand="collapsed = false">
-                <n-menu :collapsed="collapsed" :collapsed-width="64" :collapsed-icon-size="22" :options="menuOptions" />
-                <n-menu class="bottomMenu" :collapsed="collapsed" :collapsed-width="64" :collapsed-icon-size="22"
+                <n-menu :value="mValue" @update:value="MeUpdateValue" :collapsed="collapsed" :collapsed-width="64" :collapsed-icon-size="22" :options="menuOptions" />
+                <n-menu :value="bottomValue" @update:value="MeUpdateValueBottom" class="bottomMenu"  :collapsed="collapsed" :collapsed-width="64" :collapsed-icon-size="22"
                     :options="menuUserOptions" />
             </n-layout-sider>
             <n-layout-content content-style="padding: 15px;height: 95vh">

@@ -36,6 +36,11 @@ const router = createRouter({
           path: '/home/color',
           name: 'homeColor',
           component: () => import('../views/color/ColorView.vue')
+        },
+        {
+          path: '/home/if',
+          name: 'homeif',
+          component: () => import('../views/iframe/IframeView.vue')
         }
       ]
     },
